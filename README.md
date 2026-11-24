@@ -2,118 +2,96 @@
 
 ## 1. Summary
 
-- **What I built:** an n8n workflow that receives each support email on a webhook and has an LLM classify it into schema-valid JSON. Code then applies the business rules: order lookup, privacy check, date maths, return eligibility and risk flags. A tool-using AI agent (`get_order`, `search_faq`) drafts the reply, and a guardrail checks the draft. Return/refund and complaint emails open or update a de-duplicated ticket, and every email gets one row in the Audit Log.
-- **Platform and LLM:** n8n (built and tested on self-hosted n8n 2.49.5; imports into n8n Cloud). OpenRouter with `openai/gpt-4o-mini` for classification (T=0, JSON mode) and `openai/gpt-4.1-mini` for the reply agent (T=0.3).
+- **What I built:** an n8n workflow that reads each support email, classifies it with an LLM, looks up the order, and then either drafts a reply, opens or updates a ticket, or just logs it. Anything risky gets flagged for a person.
+- **Platform and LLM:** n8n, with OpenRouter for the models: gpt-4o-mini for classification and gpt-4.1-mini for the reply agent. Settings are in section 4.
 - **Time spent:** _<fill in>_
-- **Works:** all 25 emails ran through the n8n webhook with 25/25 correct intents, 24/25 correct actions, 25/25 valid JSON on the first try, 9 tickets (E04 and E21 merged into one) and 14 emails sent to "needs human". Hindi and Hinglish replies work. Tokens and cost are tracked.
-- **Doesn't / weak spots:** see [TEST_REPORT §5](TEST_REPORT.md#5-failures-i-could-not-fix-be-honest). E24 is over-escalated. The agent sometimes skips `search_faq` on medical questions (the draft is still held for a human). In the test run the Google Sheets nodes were swapped for in-memory stubs, because the test sandbox had no Google login; the real Sheets nodes are configured but were first run by _<you, on your instance>_.
+- **What works:** all 25 test emails run end to end. 25/25 intents and 24/25 actions came out right. There are 9 tickets, because E04 and E21 are the same order and share one. Hindi and Hinglish emails get replies in the same language.
+- **What doesn't (yet):** E24 gets sent to a human when it didn't need to be. The agent sometimes skips the FAQ lookup on the eczema question. In my test run the Google Sheets steps wrote to memory, not a real sheet. More on all of this in the test report.
 
 ## 2. Architecture
 
 ![workflow](./screenshots/workflow.png)
 
-| Step / node | What it does | Why I designed it this way |
-|---|---|---|
-| **Email In (Webhook)** | `POST /webhook/kesar-support`, body = one email object | Matches `scripts/send_test_emails.py`. Responds immediately so the sender doesn't time out |
-| **Fetch Orders / Fetch FAQ** | HTTP GET of `orders.json` and `faq.md` from the assignment repo | Treated as a read-only order API, with retry on fail |
-| **Prepare Case** | Validates the webhook body and builds the classification request | Keeps the prompt in one place |
-| **LLM Classify** | OpenRouter, gpt-4o-mini, T=0, `response_format: json_object` | A cheap, fast model is enough for triage. JSON mode cuts down invalid output |
-| **Validate JSON → Valid JSON? → LLM Repair → Fallback** | Validates against `schemas/llm_output.schema.json`. Tries a code repair first (case, `kc 1041` → `KC-1041`, `95` → `0.95`), then one LLM repair call with the error list, then a safe fallback (`intent: other`, confidence 0, needs_human) | Output is always schema-valid. The flow never crashes and never guesses |
-| **Rules Engine** (Code) | Checks the order ID against the email text with a regex, looks up the order by ID then by sender email, checks `customer_email == sender`, works out days since delivery from `received_at`, applies FAQ §4/§5/§6 (eligibility, refund route, non-refundable fees), sets risk flags (injection, medical, public threat), and decides action, ticket, priority and needs_human | Hard rules in code, not prompts. A model can be talked out of a rule; an IF statement can't |
-| **Route (by intent + rules)** | Switch: *AI agent draft* / *Safe template* (wrong sender, order not found) / *Log only* (intent `other`) | In privacy and not-found cases the LLM never sees order data |
-| **Reply Agent** + `get_order` + `search_faq` | n8n AI Agent (gpt-4.1-mini). It gets trusted CASE FACTS (policy decision, language, verified order ID) and the untrusted email inside `<email>` tags. The agent decides which tools to call | `get_order` enforces ownership in code. `search_faq` splits the FAQ by heading (each product row is its own chunk) and does keyword plus synonym scoring, so answers stay grounded in the FAQ and the retrieval is easy to inspect. Vector search would be overkill for a 9-section FAQ |
-| **Guardrails + Draft** | Rejects drafts containing URLs, ₹ amounts or order IDs that aren't in verified data, cure/treat claims, "refund approved" without eligibility, emoji, or a missing sign-off. A failed draft goes to needs_human | A second line of defence against hallucination and injection |
-| **Needs ticket? → Find Open Tickets → Upsert Ticket → Update / Append** | Reads Tickets rows for this `order_id`. If an open ticket exists, appends the email ID and a note and raises the priority; otherwise appends `TKT-<order>-<n>` | One open ticket per order. IDs need no global counter |
-| **Build Audit Row → Append Audit Log** | One row per email with all template columns, plus `tokens` and `cost_usd` | The `notes` column records the reasons behind each decision (flags, why needs_human, JSON path, tools used) |
+The basic idea: the LLM does the language work (understanding the email, writing the reply), and plain code makes every decision that has a right answer. That covers privacy, dates, refund eligibility and which emails need a human.
 
-The rule code lives in **`code/lib/core.js`**. `code/build_workflow.js` copies those functions into the n8n Code nodes, so the workflow and the local harness (`code/run_local.js`) run the same logic. `code/test_core.js` covers the rules with assertions.
+| Step / node | What it does | Why |
+|---|---|---|
+| Email In (Webhook) | Receives one email as JSON | Works with the provided sender script |
+| Fetch Orders, Fetch FAQ | Pulls `orders.json` and `faq.md` from the assignment repo | Stands in for an order API |
+| LLM Classify | gpt-4o-mini, temperature 0, JSON mode | Cheap and fast, and classification doesn't need a big model |
+| Validate JSON → Repair → Fallback | Checks the output against the schema. If it's broken, the code fixes the easy stuff first, then asks the model once to fix it. If that still fails, the email becomes `other` and goes to a human | So a bad response can never crash the flow |
+| Rules Engine | Finds the order (by ID, or by the sender's email if there's no ID), checks the sender owns it, works out days since delivery, applies the return and damage rules from the FAQ, and looks for prompt injection, medical questions and threats. Then it decides the action, priority and whether a human is needed | A prompt can be argued with; an if-statement can't |
+| Route | Three ways out: AI reply, fixed template, or log only | When the sender doesn't own the order, or it doesn't exist, the AI never sees any order data |
+| Reply Agent + `get_order` + `search_faq` | Writes the draft. It's told the policy decision and has to look facts up through the two tools | `get_order` only returns the sender's own orders. `search_faq` splits the FAQ by section; it's small enough that keyword matching works fine |
+| Guardrails | Checks the draft for links, amounts or order numbers that aren't in the real data, "cures"/"treats" claims, and promised refunds | A last check before anything gets near a customer |
+| Tickets | Looks for an open ticket on the same order. If there is one, it adds the email and a note; if not, it creates `TKT-<order>-<n>` | No duplicate tickets |
+| Audit Log | One row per email, plus token count and cost | The notes column says why each decision was made |
+
+All the rules are in `code/lib/core.js`. `code/build_workflow.js` copies them into the n8n Code nodes, so the workflow and my local test script run the same rules.
 
 ## 3. Setup — how someone else can run this
 
-1. **Accounts and credentials** (no keys are in this repo): an n8n Cloud trial or self-hosted n8n (≥ 2.x, Node 24), an OpenRouter API key, and a Google account for Sheets.
-2. **Import:** n8n → *Workflows → Import from file* → `workflow/kesar_support_copilot.json`.
-3. **Credentials and configuration:**
-   - Create an **OpenRouter** credential and select it on *LLM Classify*, *LLM Repair JSON* and *OpenRouter Chat Model*.
-   - Create a Google Sheet named **Kesar Support** with tabs **Audit Log** and **Tickets**. Import the headers from the assignment's `templates/` folder and add two extra Audit Log columns, `tokens` and `cost_usd`.
-   - Create a **Google Sheets OAuth2** credential. On each of the 4 Sheets nodes, select it and replace `YOUR_GOOGLE_SHEET_ID` with your sheet's ID.
-   - Activate (publish) the workflow.
-4. **Run the 25 test emails:**
+1. **You need:** n8n (Cloud or self-hosted, version 2.x), an OpenRouter API key, and a Google account. No keys are in this repo.
+2. **Import:** in n8n, go to Workflows → Import from file → `workflow/kesar_support_copilot.json`.
+3. **Credentials:**
+   - Add an OpenRouter credential and pick it on the three LLM nodes.
+   - Make a Google Sheet called "Kesar Support" with an **Audit Log** tab and a **Tickets** tab, using the headers from the assignment templates. Add `tokens` and `cost_usd` columns to Audit Log.
+   - Add a Google Sheets credential, and on the four Sheets nodes replace `YOUR_GOOGLE_SHEET_ID` with your sheet's ID.
+   - Activate the workflow.
+4. **Run the test emails:**
    ```bash
    python scripts/send_test_emails.py --url https://<your-n8n>/webhook/kesar-support
    ```
-   Keep the default 5 s delay; ticket de-duplication relies on emails for the same order not running at the same moment.
+   Keep the 5-second delay, so two emails about the same order don't run at once.
 
-**Without n8n** (the same logic, writing CSVs to `results/<version>/`):
-```bash
-OPENROUTER_API_KEY=... node code/run_local.js --version v2
-```
-```bash
-node code/test_core.js
-```
-After editing `code/lib/core.js` or `prompts/*_v2.md`, regenerate the workflow with `node code/build_workflow.js`.
+To test without n8n, `OPENROUTER_API_KEY=... node code/run_local.js --version v2` runs the same pipeline and writes CSVs. `node code/test_core.js` checks the rules. If you change `core.js` or the prompts, run `node code/build_workflow.js` to rebuild the workflow file.
 
 ## 4. Prompts
 
-- Classification (v2): [`prompts/classify_v2.md`](prompts/classify_v2.md). gpt-4o-mini, temperature 0, JSON mode.
-- Agent system prompt (v2): [`prompts/agent_v2.md`](prompts/agent_v2.md). gpt-4.1-mini, temperature 0.3, max 6 iterations.
-- v1 prompts for comparison: [`prompts/classify_v1.md`](prompts/classify_v1.md), [`prompts/agent_v1.md`](prompts/agent_v1.md).
+- Classification: `prompts/classify_v2.md` (gpt-4o-mini, temperature 0, JSON mode)
+- Reply agent: `prompts/agent_v2.md` (gpt-4.1-mini, temperature 0.3, max 6 steps)
+- The v1 versions are next to them for comparison.
 
-The agent's user message is built in the Rules Engine: `CASE FACTS` (trusted JSON with the policy decision, verified order ID, language and ticket status), then the email inside `<email>` tags, labelled untrusted.
+The agent gets two things: a block of "case facts" from the rules engine (the policy decision, the verified order ID, the customer's language), and the email itself inside `<email>` tags, marked as untrusted.
 
 ## 5. Key decisions and assumptions
 
-- **Low confidence:** confidence below **0.75** → needs_human. gpt-4o-mini returned 0.85–0.95 on clear emails, and the vague ones (E18 "Where is it???") scored lower. I don't rely on confidence alone, because models are overconfident. Deterministic triggers also send emails to a human: injection, medical, public threat, angry, order not found, wrong sender, policy decline, damage claims, and guardrail failures.
-- **Duplicate tickets:** before appending, the flow reads Tickets rows with the same `order_id` and status ≠ `Closed`. If one exists it updates that row, adding the email ID to `email_ids`, appending a timestamped note and keeping the higher priority. E04 and E21 → `TKT-1052-1`.
-- **Order details only to the owner:** enforced in three places. The Rules Engine routes wrong-sender cases to a template; the `get_order` tool refuses other customers' orders; the guardrail rejects any URL or order ID not verified for that sender. With no order ID, the flow looks up by sender email and picks the most recent order, flagging a human if there are several.
-- **Grounded in the FAQ:** the agent must use `search_faq` and answer only from what it returns, and `NO_MATCH` means "NEEDS_HUMAN". Policy decisions come from code. The guardrail allows only amounts that appear in the order or the FAQ.
-- **Other assumptions:** "today" is each email's `received_at` date (IST). The 48-hour damage window is counted in calendar days because orders have no delivery time. `other` emails get no reply draft. Damage, wrong and missing claims are `complaint` with priority High. Replies are drafts only.
+- **Low confidence:** under 0.75 goes to a human. I don't lean on confidence much, though; the model said 0.85–0.95 on almost everything. Most escalations come from things code can detect: injection attempts, medical questions, threats, missing orders, the wrong sender, declined refunds, and damage claims.
+- **Duplicate tickets:** before creating a ticket the flow looks for an open one on the same order and updates it instead. E04 and E21 both land on TKT-1052-1.
+- **Order details only to the owner:** checked three times. The rules engine sends wrong-sender emails to a template. The `get_order` tool refuses other people's orders. The guardrail blocks any link or order number that wasn't verified for that sender.
+- **Staying grounded in the FAQ:** the agent has to answer from `search_faq`. If nothing matches, it hands off to a human. Refund and return decisions are made in code, not by the agent.
+- **Assumptions:** "today" is the date of each email's `received_at`. The 48-hour damage window is counted in calendar days, since the data has no delivery times. "Other" emails get logged with no reply. Damage, wrong-item and missing-item emails count as complaints with High priority.
 
 ## 6. Scaling to 1,000 emails/day
 
-- **What breaks first:** the webhook runs each email straight away, so bursts hit OpenRouter rate limits, and two emails on the same order can race on ticket de-duplication. Google Sheets has its own limits (about 60 writes per minute per user) and isn't a database.
-- **Changes:**
-  1. Put a queue in front (n8n queue mode with Redis workers, or a "Kesar inbox" table with status) and process orders one at a time.
-  2. Move tickets and the audit log to Postgres or a real helpdesk (Freshdesk, Zendesk) with a unique open-ticket constraint per order.
-  3. Replace the raw-file order API with Shopify's API, with caching.
-  4. Keep retries with backoff (already on) and add a dead-letter path.
-  5. Monitor: daily needs_human rate, guardrail-failure rate, JSON fallback rate, cost per email, and a sample of drafts reviewed by a human each week.
-  6. Cache the FAQ and prompts (prompt caching cuts the cost of the repeated system prompt).
+The first problems would be rate limits on the LLM during busy periods, and two emails about the same order hitting the ticket check at the same time. Google Sheets would also struggle as a database at that volume.
+
+What I'd change:
+- Put a queue in front (n8n queue mode with Redis) and handle one order at a time.
+- Move tickets and the log into Postgres or a real helpdesk.
+- Use Shopify's API instead of a JSON file.
+- Keep the retries and add somewhere for failed emails to land.
+- Watch a few numbers every day: how many go to a human, how many drafts fail the guardrail, cost per email.
 
 ## 7. Product-thinking questions
 
-1. **Auto-send vs. draft:** I'd auto-send only order-status replies where the order is verified for the sender, the status is shipped, out for delivery or delivered, no flags are raised, confidence is at least 0.85 and the guardrail passes (E01, E10, E15), plus product answers from FAQ sections that never change (E02). In this test set that's about 25% of email. Anything involving money (refunds, declines, damage), anything angry, medical, injection-flagged or not found stays a draft. I'd set the auto-send threshold higher (0.85) than the needs-human threshold (0.75), because a wrong auto-sent reply costs more than a human glance. I'd revisit both after measuring edit rates.
+1. **Auto-send vs. draft:** I'd only auto-send simple order-status replies: the order checks out for the sender, nothing is flagged, confidence is 0.85 or higher, and the guardrail passes. Maybe also plain product answers straight from the FAQ. That's about a quarter of the test emails. Anything about money, anything angry or medical, and anything where the order wasn't found stays a draft. The auto-send bar sits higher than the human-review bar (0.75) because a wrong email that's already gone costs more than someone spending ten seconds checking it.
 
-2. **Cost:** measured with OpenRouter `usage.cost`: classification about 1,100 tokens ≈ $0.0002, agent turns about 2,000–4,500 tokens ≈ $0.0009, so **≈ $0.0011 per email** (≈ ₹0.09 at ₹85/$). Log-only and template emails cost about $0.0002. At 1,000 emails/day: $1.1 × 30 ≈ **$33 a month (≈ ₹2,800)**, or about $40 with retries and repairs. That is tiny next to one agent's salary, so model choice should be driven by quality, not cost.
+2. **Cost:** from OpenRouter's own cost numbers, classification is about $0.0002 and the agent about $0.0009, so roughly **$0.0011 per email (about ₹0.09)**. Emails that only get logged cost less. At 1,000 a day that's about $33 a month (around ₹2,800), maybe $40 with retries. That's small enough that I'd pick models on quality, not price.
 
-3. **Success metric:** the **edit rate on drafts**: the share of drafts a human sends with no or minor edits, by intent. It measures usefulness and safety at once. Week-1 target: at least 70% on order-status. I'd switch it off on any privacy leak (order data sent to the wrong person), any invented refund or policy promise reaching a customer, or an edit rate below 40% (it then costs the agent more time than it saves).
+3. **Success metric:** the share of drafts that go out with little or no editing. If that's 70% or more for order-status emails in week one, it's working. I'd switch it off straight away if order details ever went to the wrong person or a made-up refund promise reached a customer, or if the edit rate fell under 40%, because then it's costing time instead of saving it.
 
-4. **Failure experience:** the worst case is a confident wrong answer: a wrong date, a promised refund, or someone else's data. To limit the damage: risky categories are drafts only; hard rules are in code; the guardrail blocks unverified facts; replies avoid exact commitments ("a team member will follow up within 24 business hours"). Every reply is linked to an audit row so a mistake can be traced and corrected quickly with an apology. Ticket notes keep context so the customer never has to repeat themselves.
+4. **Failure experience:** the worst case is a confident wrong answer, like a wrong date, a promised refund, or someone else's order details. To limit that: risky emails are drafts only, the hard rules are in code, and the guardrail blocks made-up facts. Replies also avoid exact promises ("someone will follow up within 24 business hours"). Every reply has an audit row, so a mistake can be found and fixed fast with an apology.
 
-5. **Don't automate:** **declining a refund or return** (E12, E16). It's money, the customer is already unhappy, and goodwill exceptions such as a partial refund or a free sample for a loyal customer are judgment calls that rules can't make. The copilot can work out eligibility and draft the reply, but a person should press send.
+5. **Don't automate:** saying no to a refund (E12, E16). It's money, the customer is already unhappy, and the right call is sometimes a goodwill gesture that no rule would make. The flow can check eligibility and write the draft, but a person should press send.
 
 ## 8. How I used AI tools
 
-_<Describe your own use honestly. For example:>_ I used Claude (Claude Code) to scaffold the workflow generator, the rule code, the local test harness and the first drafts of the prompts and this write-up. I decided the architecture myself (rules in code, privacy enforced in the tool, template branch), checked every expected outcome in the test report against `faq.md` and `orders.json`, and reviewed every draft. Testing turned up the unreliable `injection_suspected` flag and the v1 privacy and injection failures, and I changed the design because of them.
+_<Write this yourself, honestly: which tools you used, for what, and where you made the calls yourself.>_
 
 ## 9. If I had one more week
 
-- A grounding checker (a second small-model pass, or a sentence-to-FAQ match) to catch unsourced phrases like the one in E20
-- Escalate on deterministic anger signals rather than model sentiment (E24)
-- A Slack or email approval step for needs_human drafts, with one-click send
-- Move tickets to a real helpdesk and run the workflow in queue mode
-- A small labelled eval set (these 25 emails plus about 50 variants) run in CI whenever a prompt changes
-
-## Repo layout
-
-```
-workflow/kesar_support_copilot.json   n8n export (no secrets; credential IDs are placeholders)
-code/lib/core.js                       all deterministic rules (single source of truth)
-code/build_workflow.js                 generates the n8n JSON from core.js + prompts
-code/run_local.js                      same pipeline outside n8n (CSV output)
-code/test_core.js                      assertions for the rules
-prompts/                               v1 and v2 prompts
-results/v2_n8n/                        run of record: 25 emails through n8n (audit_log.csv, tickets.csv)
-results/v1/                            v1 run on 12 emails
-screenshots/                           workflow.png, tickets.png, audit_log.png
-data/, schemas/, scripts/              from the assignment (used by the local harness)
-```
+- A second check that every sentence in a reply is backed by the FAQ (it would have caught E20)
+- Escalate on clear anger signals instead of the model's sentiment guess (E24)
+- A Slack approval step for flagged drafts
+- A bigger set of test emails, run automatically whenever a prompt changes
