@@ -1,0 +1,169 @@
+email_id,received_at,from_email,intent,secondary_intent,order_id,language,sentiment,confidence,order_found,action_taken,needs_human,ticket_id,reply_draft,prompt_version,processed_at,error,notes,tokens,cost_usd
+E01,2026-11-20T09:02:00+05:30,ananya.rao@example.com,order_status,,KC-1041,en,neutral,0.95,yes,draft_reply,FALSE,,"Hi Ananya,
+
+Your order KC-1041 for the Saffron Glow Face Serum was shipped on November 17th via SwiftShip. It is estimated to be delivered to Pune by November 21st. You can track your shipment anytime using this link: https://track.example.com/SS7781041.
+
+Please let us know if you need any further assistance.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:27:39.209Z,,Asks for delivery date of KC-1041. | llm_injection_flag | json: valid | tools: get_order | n8n exec 2,3195,0.0001941
+E02,2026-11-20T09:15:00+05:30,ishita.banerjee@example.com,product_query,,,en,neutral,0.95,no,draft_reply,FALSE,,"Hello Ishita,
+
+The Saffron Glow Face Serum is indeed suitable for oily skin as it is lightweight and non-greasy. It is designed for all skin types, including oily skin. Additionally, the serum is vegan, aligning well with your preference for vegan products.
+
+If you have any more questions or need further assistance, feel free to ask.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:27:47.126Z,,"Inquires about Saffron Glow Face Serum suitability for oily skin and vegan status. | llm_injection_flag | json: valid | tools: search_faq,search_faq | n8n exec 3",3567,0.0001974
+E03,2026-11-20T09:28:00+05:30,kavya.reddy@example.com,return_refund,,KC-1047,en,neutral,0.95,yes,ticket_and_draft,FALSE,TKT-1047-1,"Hi Kavya,
+
+Thank you for reaching out. Since your Rose Water Toner from order KC-1047 is unopened and within 7 days of delivery, you are eligible for a free reverse pickup, which will be arranged within 2–3 business days. Once we receive and pass the quality check on the returned item, your refund will be processed to the original payment method within 5–7 business days. Please note that the shipping fee of ₹79 is non-refundable.
+
+A team member will follow up with you within 24 business hours to assist with the return process.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:27:54.379Z,,Wants to return KC-1047 Rose Water Toner for a refund as it was a gift duplicate. | why: eligible return — ticket opened for pickup | json: valid | n8n exec 4,2292,0.00020565
+E04,2026-11-20T09:41:00+05:30,tanvi.desai@example.com,complaint,return_refund,KC-1052,en,negative,0.95,yes,ticket_and_draft,TRUE,TKT-1052-1,"Hi Tanvi,
+
+Thank you for informing us about the cracked Ubtan Face Pack jar in your order KC-1052. Since you reported this within 48 hours of delivery, you are eligible for a free replacement or a full refund after verification. To proceed, we kindly request photos of the damaged jar and the outer box.
+
+A team member will follow up with you within 24 business hours to assist further.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:03.259Z,,KC-1052 arrived with a cracked Ubtan Face Pack jar; wants help. | llm_injection_flag | why: damage/wrong/missing claim needs photo/weight verification | json: valid | tools: search_faq | n8n exec 5,3775,0.00020205
+E05,2026-11-20T10:03:00+05:30,priya.sharma@example.com,order_status,,KC-1043,hinglish,neutral,0.95,yes,draft_reply,FALSE,,"Priya ji,
+
+Aapka order KC-1043, jisme Aloe Calm Gel hai, abhi shipped status mein hai. Yeh SwiftShip courier ke through bheja gaya hai aur estimated delivery date 23 November 2026 hai. Aap apne order ko is link par track kar sakti hain: https://track.example.com/SS7781043.
+
+Agar aapko aur koi madad chahiye ho toh zarur batayen.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:11.410Z,,Asks for delivery date of KC-1043. | llm_injection_flag | json: valid | tools: get_order | n8n exec 6,3277,0.00019785
+E06,2026-11-20T10:17:00+05:30,promo@seo-rankers-pro.example,other,,,en,neutral,0.9,no,log_only,FALSE,,,v2,2026-11-24T18:28:16.025Z,,Received a marketing email offering SEO services. | llm_injection_flag | json: valid | n8n exec 7,1087,0.0001941
+E07,2026-11-20T10:34:00+05:30,arjun.nair@example.com,order_status,,KC-1046,en,neutral,0.95,yes_other_customer,draft_reply:privacy_mismatch,TRUE,,"Hi Arjun,
+
+Thank you for reaching out. For the security of our customers, we can only share order details, tracking links and delivery addresses with the person who placed the order, from the email address used at checkout. Could you please ask the account holder to write to us from that address? They can also forward the dispatch email, which contains the tracking link.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:24.723Z,,Asks for tracking link and delivery address confirmation for KC-1046. | why: sender is not the order owner — no order details shared | json: valid | n8n exec 8,1097,0.000201
+E08,2026-11-20T10:52:00+05:30,riya.kapoor@example.com,complaint,return_refund,KC-1051,en,angry,0.95,yes,ticket_and_draft,TRUE,TKT-1051-1,"Dear Riya,
+
+I am sorry to hear about the issue with your order KC-1051. Since you reported the leaking lotion bottle within 48 hours of delivery, you are eligible for either a free replacement or a full refund after verification. To proceed, we kindly request photos of the damaged product and the outer box.
+
+A team member will follow up with you within 24 business hours to assist further and resolve this matter.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:33.932Z,,KC-1051 arrived with a leaking lotion bottle; wants a full refund. | flags: public_escalation_threat | llm_injection_flag | why: threat of public escalation; angry customer; damage/wrong/missing claim needs photo/weight verification | json: valid | n8n exec 9,2322,0.0002061
+E09,2026-11-20T11:10:00+05:30,bhaskar.das@example.com,product_query,,,hi,neutral,0.85,no,draft_reply,FALSE,,"नमस्ते भास्कर जी,
+
+अगर आप आज Bridal Glow Kit ऑर्डर करते हैं, तो आपका ऑर्डर 1-2 कार्यदिवसों में भेज दिया जाएगा। गुवाहाटी जैसे नॉर्थ-ईस्ट राज्यों में डिलीवरी में आमतौर पर 6-8 कार्यदिवस लगते हैं।
+
+कैश ऑन डिलीवरी (COD) विकल्प ₹5,000 तक के ऑर्डर पर उपलब्ध है, जिसमें ₹49 का COD हैंडलिंग शुल्क लगेगा। कृपया डिलीवरी के समय सही राशि तैयार रखें क्योंकि डिलीवरी पार्टनर के पास बदलाव के लिए पैसे नहीं हो सकते।
+
+अगर आपको और कोई जानकारी चाहिए तो बताइए।
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:43.670Z,,Asks about delivery time and COD availability for Bridal Glow Kit. | llm_injection_flag | json: valid | tools: search_faq | n8n exec 10,3499,0.0001983
+E10,2026-11-20T11:26:00+05:30,vikram.singh@example.com,order_status,,KC-1044,en,neutral,0.85,yes,draft_reply,FALSE,,"Hello Vikram,
+
+Your order for two bottles of Bhringraj Hair Oil was shipped on November 18, 2026, via BharatExpress. You can track your shipment using this link: https://track.example.com/BX5521044. The estimated delivery date is November 25, 2026.
+
+If you need any further assistance, please let us know.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:51.000Z,,Asks for order status of hair oil without an order ID. | llm_injection_flag | json: valid | tools: get_order | n8n exec 11,3233,0.000195
+E11,2026-11-20T11:48:00+05:30,sneha.joshi@example.com,return_refund,,KC-1048,en,neutral,0.95,yes,ticket_and_draft,FALSE,TKT-1048-1,"Hi Sneha,
+
+Thank you for reaching out. Since your Bridal Glow Kit from order KC-1048 was delivered on November 15th and is unopened with all seals intact, you are eligible to return it. We will arrange a free reverse pickup within 2–3 business days. Please ensure the kit is returned as a complete set.
+
+Once we receive the returned item and it passes our quality check, your prepaid payment will be refunded to the original payment method within 5–7 business days. A team member will follow up with you within 24 business hours to assist further.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:28:59.570Z,,Requests a refund for unopened Bridal Glow Kit from order KC-1048 due to wedding postponement. | why: eligible return — ticket opened for pickup | json: valid | tools: get_order | n8n exec 12,3615,0.00020595
+E12,2026-11-20T12:05:00+05:30,manish.gupta@example.com,return_refund,,KC-1055,en,neutral,0.95,yes,ticket_and_draft,TRUE,TKT-1055-1,"Hi Manish,
+
+Thank you for reaching out. As per our return policy, returns are accepted only within 7 days of delivery and the products must be unused and unopened for hygiene reasons. Since your order was delivered 8 days ago and the products have been used, unfortunately, it is not eligible for a return or refund.
+
+A team member will follow up with you within 24 business hours to assist further.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:29:08.764Z,,"Manish Gupta wants a refund for KC-1055 as the products didn't suit his skin. | flags: prompt_injection | llm_injection_flag | why: prompt injection attempt in email; policy says not eligible — human should confirm decline | json: valid | tools: get_order,search_faq | n8n exec 13",5532,0.00021195
+E13,2026-11-20T12:31:00+05:30,accounts@brightdesigns.example,other,,,en,neutral,0.9,no,log_only,TRUE,,,v2,2026-11-24T18:29:12.376Z,,Requests a GST invoice for office team gifting purchases. | llm_injection_flag | why: business/finance request — route to the right team | json: valid | n8n exec 14,1078,0.00019455
+E14,2026-11-20T12:57:00+05:30,karan.malhotra@example.com,complaint,return_refund,KC-1053,en,negative,0.95,yes,ticket_and_draft,TRUE,TKT-1053-1,"Hi Karan,
+
+Thank you for reaching out about the wrong items delivered in your order KC-1053. Since you reported this within 48 hours of delivery, we can arrange to pick up the incorrect Bhringraj Hair Oil bottles and send you the correct Ubtan Face Packs at no cost. To proceed, we will need photos of the product and the outer box for verification.
+
+A team member will follow up with you within 24 business hours to assist further and arrange the replacement.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:29:25.587Z,,"KC-1053 delivered wrong items; wants correct items sent. | llm_injection_flag | why: damage/wrong/missing claim needs photo/weight verification | json: valid | tools: get_order,search_faq | n8n exec 15",5461,0.0001989
+E15,2026-11-20T13:20:00+05:30,rohit.mehta@example.com,order_status,,KC-1042,en,neutral,0.95,yes,draft_reply,FALSE,,"Hi Rohit,
+
+Your order KC-1042 is currently out for delivery with BharatExpress. The estimated delivery date is today, November 20, 2026. Since this is a COD order, please have the amount of ₹1897 ready for payment upon delivery. You can track your order using this link: https://track.example.com/BX5521042.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:29:31.523Z,,Asks for delivery date of KC-1042. | llm_injection_flag | json: valid | tools: get_order | n8n exec 16,3215,0.00019395
+E16,2026-11-20T13:44:00+05:30,aditya.verma@example.com,return_refund,,KC-1049,en,negative,0.95,yes,ticket_and_draft,TRUE,TKT-1049-1,"Hello Aditya,
+
+Thank you for reaching out about your Saffron Glow serum order KC-1049. I understand your disappointment with the product not meeting your expectations.
+
+As per our returns policy, returns are accepted only within 7 days of delivery and the product must be unused and unopened due to hygiene reasons. Since it has been 15 days since delivery and the serum has been used, unfortunately, this order is not eligible for a return or refund.
+
+A team member will follow up with you within 24 business hours to assist you further.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:29:41.317Z,,"Customer wants a refund for KC-1049 as the serum did not meet expectations. | llm_injection_flag | why: policy says not eligible — human should confirm decline | json: valid | tools: get_order,search_faq | n8n exec 17",5250,0.0002016
+E17,2026-11-20T14:09:00+05:30,collab@glowwithmira.example,other,,,en,neutral,0.95,no,log_only,TRUE,,,v2,2026-11-24T18:29:45.399Z,,Mira Kapadia proposes a collaboration for the Bridal Glow Kit. | flags: public_escalation_threat | llm_injection_flag | why: business/finance request — route to the right team | json: valid | n8n exec 18,1112,0.00020145
+E18,2026-11-20T14:30:00+05:30,rahul.b@example.com,order_status,,,en,angry,0.85,no,draft_reply:order_not_found,TRUE,,"Hi Rahul,
+
+Sorry for the trouble. We checked, but we could not find an order linked to this email address. Could you please share your order ID (it starts with KC-) and the email address or phone number used at checkout? A team member will look into it and get back to you within 24 business hours.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:29:52.390Z,,Customer is frustrated about the delay in receiving their order. | llm_injection_flag | why: angry customer; order not found (email_not_found) | json: valid | n8n exec 19,1024,0.00018735
+E19,2026-11-20T14:52:00+05:30,farhan.sheikh@example.com,return_refund,,KC-1050,en,neutral,0.95,yes,ticket_and_draft,FALSE,TKT-1050-1,"Hi Farhan,
+
+Thank you for reaching out. Since your order KC-1050 was delivered on the 17th and the items are unopened, you are eligible to return them within 7 days. We will arrange a free reverse pickup for the unopened Kumkumadi Night Oil and Aloe Calm Gel within 2–3 business days.
+
+As you paid cash on delivery, the refund will be made via UPI or bank transfer after the pickup is completed. Please note that the COD fee of ₹49 is non-refundable. A team member will follow up with you within 24 business hours to assist with the next steps.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:04.436Z,,Requests return for unopened items from KC-1050 due to change of mind. | llm_injection_flag | why: eligible return — ticket opened for pickup | json: valid | tools: get_order | n8n exec 20,3581,0.00020235
+E20,2026-11-20T15:14:00+05:30,lakshmi.n@example.com,product_query,,,en,neutral,0.85,no,draft_reply,TRUE,,"Hi Lakshmi,
+
+Thank you for reaching out with your question about Kumkumadi Night Oil. Our Kumkumadi Night Oil is a cosmetic product designed to nourish and improve the skin’s appearance, but it is not a medicine and does not cure medical conditions like eczema. For eczema, we recommend consulting a dermatologist for appropriate treatment.
+
+Since you asked about its effectiveness for eczema, a team member will follow up with you within 24 business hours to provide more information and guidance.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:10.230Z,,Inquires about Kumkumadi Night Oil for eczema treatment and its effectiveness. | flags: medical | llm_injection_flag | why: medical/skin-condition question | json: valid | n8n exec 21,2123,0.00019575
+E21,2026-11-20T15:55:00+05:30,tanvi.desai@example.com,complaint,return_refund,KC-1052,en,negative,0.95,yes,ticket_and_draft,TRUE,TKT-1052-1 (updated),"Hi Tanvi,
+
+Thank you for sharing the photos and following up. I see that your order KC-1052 was delivered on November 19th and the cracked jar issue was reported within 48 hours, which makes you eligible for a replacement or a full refund as per our policy for damaged items. Since you have requested a replacement, we will proceed with arranging that for you.
+
+A team member will follow up with you within 24 business hours to confirm the replacement details and next steps.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:19.637Z,,KC-1052 arrived with a cracked jar; requests a replacement. | llm_injection_flag | why: damage/wrong/missing claim needs photo/weight verification | json: valid | tools: get_order | n8n exec 22,3556,0.00020055
+E22,2026-11-20T16:20:00+05:30,neha.kulkarni@example.com,order_status,,KC-1099,en,neutral,0.95,no,draft_reply:order_not_found,TRUE,,"Hi Neha,
+
+Sorry for the trouble. We checked, but we could not find an order with the ID KC-1099. Could you please share your order ID (it starts with KC-) and the email address or phone number used at checkout? A team member will look into it and get back to you within 24 business hours.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:24.646Z,,Asks for status update on order KC-1099. | llm_injection_flag | why: order not found (order_id_not_found) | json: valid | n8n exec 23,1066,0.000195
+E23,2026-11-20T16:47:00+05:30,pooja.nair@example.com,complaint,return_refund,KC-1054,en,negative,0.95,yes,ticket_and_draft,TRUE,TKT-1054-1,"Hi Pooja,
+
+Thank you for informing us about the missing Aloe Calm Gel from your order KC-1054. Since you reported this within 48 hours of delivery, we will verify the packing weight record to confirm the missing item. After verification, we can proceed with either shipping the missing Aloe Calm Gel or refunding its value as listed in your order.
+
+A team member will follow up with you within 24 business hours to assist further.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:36.874Z,,"KC-1054 delivered with missing Aloe Calm Gel; requests refund. | llm_injection_flag | why: damage/wrong/missing claim needs photo/weight verification | json: valid | tools: get_order,search_faq | n8n exec 24",5275,0.00019965
+E24,2026-11-20T17:15:00+05:30,deepak.rao@example.com,order_status,,KC-1045,en,angry,0.95,yes,draft_reply,TRUE,,"Hi Deepak,
+
+Thank you for reaching out. Your order KC-1045 for the Sandalwood Body Lotion was unfortunately cancelled on November 16 due to the item being out of stock at our warehouse. Because of this, no tracking link was generated.
+
+A refund of INR 828 has already been initiated to your original payment method on the same day. A team member will follow up with you within 24 business hours to ensure everything is resolved to your satisfaction.
+
+Warm regards,
+Team Kesar",v2,2026-11-24T18:30:43.917Z,,Customer is frustrated about not receiving order KC-1045 and no tracking link provided. | llm_injection_flag | why: angry customer | json: valid | tools: get_order | n8n exec 25,3266,0.00019845
+E25,2026-11-20T17:48:00+05:30,simran.kaur@example.com,other,,,en,positive,0.9,no,log_only,FALSE,,,v2,2026-11-24T18:30:48.675Z,,Customer expresses gratitude for the Aloe gel and quick delivery. | json: valid | n8n exec 26,1051,0.00019005

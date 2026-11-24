@@ -1,0 +1,12 @@
+{
+  "version": "v2",
+  "n": 25,
+  "valid_json_first_try": 25,
+  "needs_human": 14,
+  "tickets": 9,
+  "avg_tokens": 3123,
+  "avg_cost_usd": 0.001068,
+  "total_cost_usd": 0.02671,
+  "classify_model": "openai/gpt-4o-mini",
+  "agent_model": "openai/gpt-4.1-mini"
+}

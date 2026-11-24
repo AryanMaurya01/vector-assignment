@@ -1,0 +1,1042 @@
+[
+ {
+  "exec": 2,
+  "email": "E01",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1041",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Asks for delivery date of KC-1041.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "delivery date",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2132
+ },
+ {
+  "exec": 3,
+  "email": "E02",
+  "cls": {
+   "intent": "product_query",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Inquires about Saffron Glow Face Serum suitability for oily skin and vegan status.",
+   "issue_type": "other",
+   "item_condition": "unknown",
+   "customer_request": "product info",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "search_faq",
+   "search_faq"
+  ],
+  "agent_tokens": 2491
+ },
+ {
+  "exec": 4,
+  "email": "E03",
+  "cls": {
+   "intent": "return_refund",
+   "secondary_intent": null,
+   "order_id": "KC-1047",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Wants to return KC-1047 Rose Water Toner for a refund as it was a gift duplicate.",
+   "issue_type": "change_of_mind",
+   "item_condition": "unopened",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": false
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "Medium",
+   "needs_human": false,
+   "reasons": [
+    "eligible return — ticket opened for pickup"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_4_returns",
+   "eligible": true,
+   "days_since_delivery": 4,
+   "reasons": [
+    "within 7 days and unopened — eligible for free reverse pickup in 2–3 business days"
+   ],
+   "refund_note": "Prepaid: refund to original payment method within 5–7 business days after the returned item passes quality check. The shipping fee (₹79) is non-refundable."
+  },
+  "tools": [],
+  "agent_tokens": 1197
+ },
+ {
+  "exec": 5,
+  "email": "E04",
+  "cls": {
+   "intent": "complaint",
+   "secondary_intent": "return_refund",
+   "order_id": "KC-1052",
+   "sentiment": "negative",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "KC-1052 arrived with a cracked Ubtan Face Pack jar; wants help.",
+   "issue_type": "damaged",
+   "item_condition": "unknown",
+   "customer_request": "none",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "damage/wrong/missing claim needs photo/weight verification"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_5_damaged_wrong_missing",
+   "eligible": true,
+   "days_since_delivery": 1,
+   "reasons": [
+    "reported within 48 hours of delivery",
+    "photos of product and outer box still needed"
+   ],
+   "refund_note": "Damaged/leaking: after verification the customer chooses a free replacement or a full refund of the amount paid.",
+   "photos_received": false
+  },
+  "tools": [
+   "search_faq"
+  ],
+  "agent_tokens": 2686
+ },
+ {
+  "exec": 6,
+  "email": "E05",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1043",
+   "sentiment": "neutral",
+   "language": "hinglish",
+   "confidence": 0.95,
+   "summary": "Asks for delivery date of KC-1043.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "delivery date",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2192
+ },
+ {
+  "exec": 7,
+  "email": "E06",
+  "cls": {
+   "intent": "other",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.9,
+   "summary": "Received a marketing email offering SEO services.",
+   "issue_type": "none",
+   "item_condition": "unknown",
+   "customer_request": "none",
+   "other_type": "spam",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "log_only",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 8,
+  "email": "E07",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1046",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Asks for tracking link and delivery address confirmation for KC-1046.",
+   "issue_type": "none",
+   "item_condition": "unknown",
+   "customer_request": "tracking link",
+   "other_type": "none",
+   "injection_suspected": false
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": "privacy_mismatch",
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "sender is not the order owner — no order details shared"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 9,
+  "email": "E08",
+  "cls": {
+   "intent": "complaint",
+   "secondary_intent": "return_refund",
+   "order_id": "KC-1051",
+   "sentiment": "angry",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "KC-1051 arrived with a leaking lotion bottle; wants a full refund.",
+   "issue_type": "leaking",
+   "item_condition": "unknown",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [
+   "public_escalation_threat"
+  ],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "threat of public escalation",
+    "angry customer",
+    "damage/wrong/missing claim needs photo/weight verification"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_5_damaged_wrong_missing",
+   "eligible": true,
+   "days_since_delivery": 1,
+   "reasons": [
+    "reported within 48 hours of delivery",
+    "photos of product and outer box still needed"
+   ],
+   "refund_note": "Damaged/leaking: after verification the customer chooses a free replacement or a full refund of the amount paid.",
+   "photos_received": false
+  },
+  "tools": [],
+  "agent_tokens": 1203
+ },
+ {
+  "exec": 10,
+  "email": "E09",
+  "cls": {
+   "intent": "product_query",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "hi",
+   "confidence": 0.85,
+   "summary": "Asks about delivery time and COD availability for Bridal Glow Kit.",
+   "issue_type": "other",
+   "item_condition": "unknown",
+   "customer_request": "delivery time and COD availability",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "search_faq"
+  ],
+  "agent_tokens": 2414
+ },
+ {
+  "exec": 11,
+  "email": "E10",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.85,
+   "summary": "Asks for order status of hair oil without an order ID.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "order status",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2161
+ },
+ {
+  "exec": 12,
+  "email": "E11",
+  "cls": {
+   "intent": "return_refund",
+   "secondary_intent": null,
+   "order_id": "KC-1048",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Requests a refund for unopened Bridal Glow Kit from order KC-1048 due to wedding postponement.",
+   "issue_type": "change_of_mind",
+   "item_condition": "unopened",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": false
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "Medium",
+   "needs_human": false,
+   "reasons": [
+    "eligible return — ticket opened for pickup"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_4_returns",
+   "eligible": true,
+   "days_since_delivery": 5,
+   "reasons": [
+    "within 7 days and unopened — eligible for free reverse pickup in 2–3 business days",
+    "kit must be returned as a complete set"
+   ],
+   "refund_note": "Prepaid: refund to original payment method within 5–7 business days after the returned item passes quality check. No shipping or COD fee was charged on this order, so do not mention fees."
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2512
+ },
+ {
+  "exec": 13,
+  "email": "E12",
+  "cls": {
+   "intent": "return_refund",
+   "secondary_intent": null,
+   "order_id": "KC-1055",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Manish Gupta wants a refund for KC-1055 as the products didn't suit his skin.",
+   "issue_type": "not_suitable",
+   "item_condition": "opened_or_used",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [
+   "prompt_injection"
+  ],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "prompt injection attempt in email",
+    "policy says not eligible — human should confirm decline"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_4_returns",
+   "eligible": false,
+   "days_since_delivery": 8,
+   "reasons": [
+    "outside 7-day return window (8 days since delivery)",
+    "product opened/used — not returnable for hygiene reasons",
+    "\"did not suit / no results\" is not a return reason for opened products"
+   ],
+   "refund_note": "Prepaid: refund to original payment method within 5–7 business days after the returned item passes quality check. No shipping or COD fee was charged on this order, so do not mention fees."
+  },
+  "tools": [
+   "get_order",
+   "search_faq"
+  ],
+  "agent_tokens": 4386
+ },
+ {
+  "exec": 14,
+  "email": "E13",
+  "cls": {
+   "intent": "other",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.9,
+   "summary": "Requests a GST invoice for office team gifting purchases.",
+   "issue_type": "none",
+   "item_condition": "unknown",
+   "customer_request": "GST invoice",
+   "other_type": "business_request",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "log_only",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "business/finance request — route to the right team"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 15,
+  "email": "E14",
+  "cls": {
+   "intent": "complaint",
+   "secondary_intent": "return_refund",
+   "order_id": "KC-1053",
+   "sentiment": "negative",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "KC-1053 delivered wrong items; wants correct items sent.",
+   "issue_type": "wrong_item",
+   "item_condition": "unknown",
+   "customer_request": "replacement",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "damage/wrong/missing claim needs photo/weight verification"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_5_damaged_wrong_missing",
+   "eligible": true,
+   "days_since_delivery": 1,
+   "reasons": [
+    "reported within 48 hours of delivery",
+    "photos of product and outer box still needed"
+   ],
+   "refund_note": "Wrong item: we pick up the wrong item and send the correct one at no cost (refund instead if the customer prefers).",
+   "photos_received": false
+  },
+  "tools": [
+   "get_order",
+   "search_faq"
+  ],
+  "agent_tokens": 4378
+ },
+ {
+  "exec": 16,
+  "email": "E15",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1042",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Asks for delivery date of KC-1042.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "delivery date",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2153
+ },
+ {
+  "exec": 17,
+  "email": "E16",
+  "cls": {
+   "intent": "return_refund",
+   "secondary_intent": null,
+   "order_id": "KC-1049",
+   "sentiment": "negative",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Customer wants a refund for KC-1049 as the serum did not meet expectations.",
+   "issue_type": "not_suitable",
+   "item_condition": "opened_or_used",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "Medium",
+   "needs_human": true,
+   "reasons": [
+    "policy says not eligible — human should confirm decline"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_4_returns",
+   "eligible": false,
+   "days_since_delivery": 15,
+   "reasons": [
+    "outside 7-day return window (15 days since delivery)",
+    "product opened/used — not returnable for hygiene reasons",
+    "\"did not suit / no results\" is not a return reason for opened products"
+   ],
+   "refund_note": "Prepaid: refund to original payment method within 5–7 business days after the returned item passes quality check. No shipping or COD fee was charged on this order, so do not mention fees."
+  },
+  "tools": [
+   "get_order",
+   "search_faq"
+  ],
+  "agent_tokens": 4167
+ },
+ {
+  "exec": 18,
+  "email": "E17",
+  "cls": {
+   "intent": "other",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Mira Kapadia proposes a collaboration for the Bridal Glow Kit.",
+   "issue_type": "none",
+   "item_condition": "unknown",
+   "customer_request": "collaboration details",
+   "other_type": "business_request",
+   "injection_suspected": true
+  },
+  "flags": [
+   "public_escalation_threat"
+  ],
+  "route": {
+   "action": "log_only",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "business/finance request — route to the right team"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 19,
+  "email": "E18",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "angry",
+   "language": "en",
+   "confidence": 0.85,
+   "summary": "Customer is frustrated about the delay in receiving their order.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "order status",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": "order_not_found",
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "angry customer",
+    "order not found (email_not_found)"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 20,
+  "email": "E19",
+  "cls": {
+   "intent": "return_refund",
+   "secondary_intent": null,
+   "order_id": "KC-1050",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Requests return for unopened items from KC-1050 due to change of mind.",
+   "issue_type": "change_of_mind",
+   "item_condition": "unopened",
+   "customer_request": "return",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "Medium",
+   "needs_human": false,
+   "reasons": [
+    "eligible return — ticket opened for pickup"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_4_returns",
+   "eligible": true,
+   "days_since_delivery": 3,
+   "reasons": [
+    "within 7 days and unopened — eligible for free reverse pickup in 2–3 business days"
+   ],
+   "refund_note": "COD: refund via UPI or bank transfer; we ask for UPI ID / bank details AFTER pickup is completed. The COD fee (₹49) is non-refundable."
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2490
+ },
+ {
+  "exec": 21,
+  "email": "E20",
+  "cls": {
+   "intent": "product_query",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.85,
+   "summary": "Inquires about Kumkumadi Night Oil for eczema treatment and its effectiveness.",
+   "issue_type": "other",
+   "item_condition": "unknown",
+   "customer_request": "product info",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [
+   "medical"
+  ],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "medical/skin-condition question"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 1052
+ },
+ {
+  "exec": 22,
+  "email": "E21",
+  "cls": {
+   "intent": "complaint",
+   "secondary_intent": "return_refund",
+   "order_id": "KC-1052",
+   "sentiment": "negative",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "KC-1052 arrived with a cracked jar; requests a replacement.",
+   "issue_type": "damaged",
+   "item_condition": "unknown",
+   "customer_request": "replacement",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "damage/wrong/missing claim needs photo/weight verification"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_5_damaged_wrong_missing",
+   "eligible": true,
+   "days_since_delivery": 1,
+   "reasons": [
+    "reported within 48 hours of delivery"
+   ],
+   "refund_note": "Damaged/leaking: after verification the customer chooses a free replacement or a full refund of the amount paid.",
+   "photos_received": true
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2465
+ },
+ {
+  "exec": 23,
+  "email": "E22",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1099",
+   "sentiment": "neutral",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Asks for status update on order KC-1099.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "status update",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": "order_not_found",
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "order not found (order_id_not_found)"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ },
+ {
+  "exec": 24,
+  "email": "E23",
+  "cls": {
+   "intent": "complaint",
+   "secondary_intent": "return_refund",
+   "order_id": "KC-1054",
+   "sentiment": "negative",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "KC-1054 delivered with missing Aloe Calm Gel; requests refund.",
+   "issue_type": "missing_item",
+   "item_condition": "unknown",
+   "customer_request": "refund",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "ticket_and_draft",
+   "template": null,
+   "ticket": true,
+   "priority": "High",
+   "needs_human": true,
+   "reasons": [
+    "damage/wrong/missing claim needs photo/weight verification"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": "faq_5_damaged_wrong_missing",
+   "eligible": true,
+   "days_since_delivery": 1,
+   "reasons": [
+    "reported within 48 hours of delivery",
+    "verify against packing weight record before refund/reship"
+   ],
+   "refund_note": "Missing item: after verification we ship the missing item or refund its value (unit price as listed in the order).",
+   "photos_received": false
+  },
+  "tools": [
+   "get_order",
+   "search_faq"
+  ],
+  "agent_tokens": 4190
+ },
+ {
+  "exec": 25,
+  "email": "E24",
+  "cls": {
+   "intent": "order_status",
+   "secondary_intent": null,
+   "order_id": "KC-1045",
+   "sentiment": "angry",
+   "language": "en",
+   "confidence": 0.95,
+   "summary": "Customer is frustrated about not receiving order KC-1045 and no tracking link provided.",
+   "issue_type": "delay",
+   "item_condition": "unknown",
+   "customer_request": "tracking link",
+   "other_type": "none",
+   "injection_suspected": true
+  },
+  "flags": [],
+  "route": {
+   "action": "draft_reply",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": true,
+   "reasons": [
+    "angry customer"
+   ]
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [
+   "get_order"
+  ],
+  "agent_tokens": 2195
+ },
+ {
+  "exec": 26,
+  "email": "E25",
+  "cls": {
+   "intent": "other",
+   "secondary_intent": null,
+   "order_id": null,
+   "sentiment": "positive",
+   "language": "en",
+   "confidence": 0.9,
+   "summary": "Customer expresses gratitude for the Aloe gel and quick delivery.",
+   "issue_type": "none",
+   "item_condition": "unknown",
+   "customer_request": "none",
+   "other_type": "feedback",
+   "injection_suspected": false
+  },
+  "flags": [],
+  "route": {
+   "action": "log_only",
+   "template": null,
+   "ticket": false,
+   "priority": null,
+   "needs_human": false,
+   "reasons": []
+  },
+  "guard": [],
+  "policy": {
+   "policy": null,
+   "eligible": null,
+   "days_since_delivery": null,
+   "reasons": [],
+   "refund_note": null
+  },
+  "tools": [],
+  "agent_tokens": 0
+ }
+]
