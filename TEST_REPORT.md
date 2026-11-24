@@ -7,7 +7,7 @@
 Raw evidence for every number below is in [`results/`](results/):
 - `results/v2_n8n/`: **the v2 run of record**. All 25 emails POSTed with `scripts/send_test_emails.py` to the n8n webhook. Audit rows and tickets were collected from the n8n execution log. For that test run the Google Sheets nodes were replaced by in-memory stubs, because the sandbox had no Google login (see README §3).
 - `results/v1/`: v1 on 12 emails (local harness `code/run_local.js --version v1`).
-- `results/v2/`: v2 cross-check from the local harness. It uses the same rules and prompts and gave the same intents and actions as n8n on all 25.
+- A cross-check with the local harness (`code/run_local.js --version v2`) gave the same intents and actions as n8n on all 25.
 
 ---
 

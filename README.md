@@ -34,7 +34,7 @@ The rule code lives in **`code/lib/core.js`**. `code/build_workflow.js` copies t
 2. **Import:** n8n → *Workflows → Import from file* → `workflow/kesar_support_copilot.json`.
 3. **Credentials and configuration:**
    - Create an **OpenRouter** credential and select it on *LLM Classify*, *LLM Repair JSON* and *OpenRouter Chat Model*.
-   - Create a Google Sheet named **Kesar Support** with tabs **Audit Log** and **Tickets**. Import the headers from `templates/` and add two extra Audit Log columns, `tokens` and `cost_usd`.
+   - Create a Google Sheet named **Kesar Support** with tabs **Audit Log** and **Tickets**. Import the headers from the assignment's `templates/` folder and add two extra Audit Log columns, `tokens` and `cost_usd`.
    - Create a **Google Sheets OAuth2** credential. On each of the 4 Sheets nodes, select it and replace `YOUR_GOOGLE_SHEET_ID` with your sheet's ID.
    - Activate (publish) the workflow.
 4. **Run the 25 test emails:**
@@ -113,7 +113,7 @@ code/run_local.js                      same pipeline outside n8n (CSV output)
 code/test_core.js                      assertions for the rules
 prompts/                               v1 and v2 prompts
 results/v2_n8n/                        run of record: 25 emails through n8n (audit_log.csv, tickets.csv)
-results/v1/, results/v2/               v1 (12 emails) and local v2 cross-check
-screenshots/                           workflow.png (+ tickets.png, audit_log.png from your sheet)
-data/, schemas/, scripts/, templates/  from the assignment
+results/v1/                            v1 run on 12 emails
+screenshots/                           workflow.png, tickets.png, audit_log.png
+data/, schemas/, scripts/              from the assignment (used by the local harness)
 ```
