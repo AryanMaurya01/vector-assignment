@@ -118,7 +118,7 @@ What I'd change:
 
 ## 8. How I used AI tools
 
-_<Write this yourself, honestly: which tools you used, for what, and where you made the calls yourself.>_
+I used Claude Code for coding, prompt drafting and the docs. I made the design decisions, reviewed the output against the FAQ and order data, and tested the workflow on my own n8n. Testing v1 showed why hard rules (privacy, dates, refund eligibility) belong in code, not prompts. The main lesson: AI output is only trustworthy once you test it against cases where you already know the right answer.
 
 ## 9. If I had one more week
 
