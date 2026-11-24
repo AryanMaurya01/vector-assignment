@@ -1,5 +1,36 @@
 # Kesar & Co. Support Copilot — _<your name>_
 
+An n8n workflow that reads support emails, drafts replies, opens tickets and hands the risky ones to a person, plus a small review desk for working through what it produced.
+
+**Review desk:** `docs/index.html`. Open it in a browser, or enable GitHub Pages from the `docs` folder. It shows every test email next to its drafted reply, why each one was flagged, the tickets, and what the first version got wrong on the same email.
+
+![Review desk showing email E12, a prompt-injection attempt, with the safe draft and the reasons it was flagged](./screenshots/review_desk.png)
+
+```mermaid
+flowchart LR
+  A[Email webhook] --> B[LLM classify<br/>gpt-4o-mini]
+  B --> C{Valid JSON?}
+  C -- no --> D[Repair, then fallback]
+  C -- yes --> E[Rules engine<br/>order lookup, privacy,<br/>dates, eligibility, risk flags]
+  D --> E
+  E --> F{Route}
+  F -- reply --> G[AI agent<br/>get_order + search_faq]
+  F -- wrong sender / not found --> H[Safe template]
+  F -- other --> I[Log only]
+  G --> J[Guardrails]
+  H --> J
+  J --> K[Ticket: update or create]
+  J --> L[Audit log]
+  I --> L
+  K --> L
+```
+
+| | v1 (12 emails) | v2 (25 emails) |
+|---|---|---|
+| Correct intent | 10/12 | 25/25 |
+| Correct action | 3/12 | 24/25 |
+| Privacy leak or obeyed injection | yes (E07, E12) | no |
+
 ## 1. Summary
 
 - **What I built:** an n8n workflow that reads each support email, classifies it with an LLM, looks up the order, and then either drafts a reply, opens or updates a ticket, or just logs it. Anything risky gets flagged for a person.
